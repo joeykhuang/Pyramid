@@ -46,7 +46,7 @@ class Card:
         """
         return self.face == another_card.face
 
-    def check_discardable(self, another_card=None, discard_rules={"same_face": False, "single_k": True}):
+    def check_discardable(self, another_card=None, discard_rules={"same_face": False, "same_number": False, "single_k": True}):
         """
         Check whether a card or two cards are discardable
         :param another_card: a Card; None if only check one card
@@ -57,8 +57,10 @@ class Card:
         if another_card:
             if self.add(another_card) == 13:
                 return True
-            elif self.check_same_face(another_card):
-                return discard_rules["same_face"]
+            elif discard_rules["same_face"]:
+                return self.face == another_card.face
+            elif discard_rules["same_number"]:
+                return self.number == another_card.number
             return False
         elif discard_rules["single_k"]:
             return self.face == "K"

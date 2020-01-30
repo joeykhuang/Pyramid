@@ -11,7 +11,7 @@ card_faces = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"]
 class Game:
     def __init__(self, discard_rules=None):
         if discard_rules is None:
-            discard_rules = {"same_face": False, "single_k": True}
+            discard_rules = {"same_face": False, "same_number": False, "single_k": True}
         self.cards = [Card.Card(suit, face) for face in card_faces for suit in card_suits]
         self.shuffle()
         self.pyramid_cards = self.cards[:32]
@@ -30,7 +30,7 @@ class Game:
     def discard(self, cards):
         """
         Discard card in cards from the pyramid
-        :param cards:
+        :param cards: a Card list
         :return: None
         """
         for card in cards:
@@ -45,10 +45,12 @@ class Game:
     def match_and_discard(self, cards):
         """
         Self-check within cards and discard cards if necessary
-        :param cards: a list of unblocked Cards (length > 2)
+        :param cards: a list of unblocked Cards (length >= 2)
         :return: the number of discarded within this function
         """
-        if len(cards) < 2:
+        if len(cards) == 0:
+            return 0
+        elif len(cards) < 2:
             if cards[0].check_discardable(discard_rules=self.discard_rules):
                 self.discard([cards[0], ])
                 return 1
@@ -69,16 +71,16 @@ class Game:
     def next(self):
         """
         Perform one action and discard cards if necessary
-        :return: None
+        :return: self reference
         """
-        self.match_and_discard(self.pyramid.get_all_unblocked())  # some card discarded
-
+        while self.match_and_discard(self.pyramid.get_all_unblocked()):
+            continue # continue to check status of new unblocked cards
         for card in self.pyramid.get_all_unblocked():
             if self.match_and_discard([self.cards_in_hand[0], card]):
                 break
-
-        self.cards_in_hand.append(self.cards_in_hand[0])
-        self.cards_in_hand.remove(self.cards_in_hand[0])
+        if len(self.cards_in_hand) > 0:
+            self.cards_in_hand.append(self.cards_in_hand[0])
+            self.cards_in_hand.remove(self.cards_in_hand[0])
         return self
 
     def play(self):
@@ -114,4 +116,4 @@ class Game:
         Check if the game is over by looking at the first card
         :return: True if first card is None
         """
-        return self.pyramid.check_cleared()
+        return self.pyramid.check_cleared() or len(self.cards_in_hand) == 0

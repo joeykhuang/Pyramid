@@ -89,6 +89,6 @@ class Pyramid:
         return_string = ""
         for i in range(1, 8):
             return_string += (7 - i) * " " + " ".join(
-                map(lambda c: c.__str__(shorten=True) if c else "  ", list(self.pyramid[i].values()))) + (
+                map(lambda c: c.__str__(shorten=True) if c else "__", list(self.pyramid[i].values()))) + (
                                      7 - i) * " " + "\n"
         return return_string
