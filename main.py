@@ -11,36 +11,10 @@ import strategies
 #
 # print(Simulation.Simulation.z_interval(0.9, 100))
 
-
-results = simulation.take_sample(strategies.three_stage_rollout, 1)
-print(simulation.count_success(results))
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+basic = simulation.z_interval(0.95, strategies.simple, 1000)
+print(basic)
+greedy = simulation.z_interval(0.95, strategies.greedy, 1000)
+print(greedy)
+one_rollout = simulation.z_interval(0.95, strategies.rollout, 100)
+print(one_rollout)
 

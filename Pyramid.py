@@ -3,7 +3,6 @@ class Pyramid:
         self.pyramid = {}
         self.place_pyramid(pyramid_cards)
 
-
     def place_pyramid(self, cards):
         """
         Place down the pyramid cards into a pyramid -> dictionary
@@ -21,7 +20,6 @@ class Pyramid:
                     self.pyramid[i][j] = cards[0]
                     cards = cards[1:]
 
-
     def get_index(self, card, discarded_cards=[]):
         """
         Retrieve the index of the card in the pyramid in the form of (row, column) tuple;
@@ -38,7 +36,6 @@ class Pyramid:
                     return (row, col)
         raise Exception("Card Not In Pyramid")  # card in hand
 
-
     def remove_card(self, row, column):
         """
         Remove a card from the pyramid
@@ -47,7 +44,6 @@ class Pyramid:
         :return: None
         """
         self.pyramid[row][column] = None
-
 
     def check_blocked(self, row, column):
         """
@@ -65,7 +61,6 @@ class Pyramid:
         else:
             return True
 
-
     def get_all_unblocked(self):
         """
         Retrieve all the current unblocked cards
@@ -78,7 +73,6 @@ class Pyramid:
                     unblocked_cards.append(self.pyramid[i][j])
         return unblocked_cards
 
-
     def check_cleared(self):
         """
         Check if the pyramid is cleared
@@ -86,17 +80,14 @@ class Pyramid:
         """
         return self.pyramid[1][1] is None
 
-
     def duplicate(self):
         return Pyramid(self.to_list())
-
 
     def to_list(self):
         cards = []
         for v in self.pyramid.values():
             cards += list(v.values())
         return cards
-
 
     def __str__(self):
         """
