@@ -48,12 +48,15 @@ class State:
                     (card)
                  without repetitions
         """
-        unblocked = self.stock + self.pyramid.get_all_unblocked()
+        unblocked = self.pyramid.get_all_unblocked()
+        cards = self.stock + unblocked
         result = [(c,) for c in filter(lambda c: c.check_discardable(
-            discard_rules=self.rules), unblocked)]
-        result += list(filter(lambda cs: cs[0].check_discardable(cs[1],
-                                                                 discard_rules=self.rules),
-                              itertools.combinations(unblocked, 2)))
+            discard_rules=self.rules), cards)]
+        match_list = list(itertools.combinations(unblocked, 2))
+        match_list += list(itertools.product(unblocked, self.stock))
+        match_list += list(zip(self.stock, self.stock[1:]))
+        result += list(filter(lambda cs: cs[0].check_discardable(cs[1], 
+            discard_rules=self.rules), match_list))
         return result
 
     def score_state(self):
