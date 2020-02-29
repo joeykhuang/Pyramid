@@ -17,7 +17,7 @@ def new_deck():
     cards = [Card.Card(suit, face) for face in card_faces for suit in card_suits]
     shuffle(cards)
     stack = cards[:28]
-    stock = cards[-10:]
+    stock = cards[-24:]
     pyramid = Pyramid.Pyramid(stack)
     return State.State(stack, stock, pyramid, [])
 
@@ -25,7 +25,7 @@ def new_deck():
 def test_deck():
     cards = [Card.Card(suit, face) for face in card_faces for suit in card_suits]
     stack = cards[-28:]
-    stock = cards[:10]
+    stock = cards[:24]
     pyramid = Pyramid.Pyramid(stack)
     return State.State(stack, stock, pyramid, [])
 
@@ -42,6 +42,7 @@ def trial(strategy, deck=None):
     if deck is None:
         deck = new_deck()
     while deck.get_actions():
+        deck = deck.discard_k()
         action = strategy(deck)[0]
         deck = deck.execute(action)
     # print('.', end="")

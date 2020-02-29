@@ -50,12 +50,12 @@ class State:
         """
         unblocked = self.pyramid.get_all_unblocked()
         cards = self.stock + unblocked
-        result = [(c,) for c in filter(lambda c: c.check_discardable(
-            discard_rules=self.rules), cards)]
+        # result = [(c,) for c in filter(lambda c: c.check_discardable(
+        #     discard_rules=self.rules), cards)]
         match_list = list(itertools.combinations(unblocked, 2))
         match_list += list(itertools.product(unblocked, self.stock))
         match_list += list(zip(self.stock, self.stock[1:]))
-        result += list(filter(lambda cs: cs[0].check_discardable(cs[1], 
+        result = list(filter(lambda cs: cs[0].check_discardable(cs[1], 
             discard_rules=self.rules), match_list))
         return result
 
@@ -94,6 +94,32 @@ class State:
                 raise Exception
             discard.append(c)
         return State(stack, stock, pyramid, discard, self.rules)
+
+    def discard_k(self):
+        """
+        Discard all Ks in the unblocked cards
+        :return: a new deck
+        """
+        unblocked = self.pyramid.get_all_unblocked()
+        cards = self.stock + unblocked
+        result = [c for c in filter(lambda c: c.check_discardable(
+            discard_rules=self.rules), cards)]
+        stock = self.stock[:]
+        stack = self.stack[:]
+        pyramid = self.pyramid.duplicate()
+        discard = self.discard[:]
+        for c in result:
+            position = self.hashmap[c]
+            if position[0] == "Stock":
+                stock.remove(c)
+            elif position[0] == "Stack":
+                stack.remove(c)
+                pyramid.remove_card(position[1], position[2])
+            else:
+                raise Exception
+            discard.append(c)
+        return State(stack, stock, pyramid, discard, self.rules)
+
 
     def game_over(self):
         """
