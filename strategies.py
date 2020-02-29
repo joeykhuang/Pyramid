@@ -50,16 +50,16 @@ def trial(strategy, deck=None):
 
 
 # helper functions
-def get_all_mins(l, f):
+def get_all_maxs(l, f):
     """
     # helper function
-    Return all min values from a list
+    Return all max values from a list
     :param l: the list ('a list)
     :param f: evaluation function ('a --> int)
-    :return: a list with all min values in list l ('a list)
+    :return: a list with all max values in list l ('a list)
     """
-    min_val = min(map(f, l))
-    return [item for item in l if f(item) == min_val]
+    max_val = max(map(f, l))
+    return [item for item in l if f(item) == max_val]
 
 
 def one_more_rollout(function, deck):
@@ -70,8 +70,16 @@ def one_more_rollout(function, deck):
     :param deck: current deck
     :return: action list with equally maximized prioritized actions
     """
-    actions = get_all_mins(function(deck), lambda a: trial(function,
-                                                           deck.execute(a)).score_state())
+    # actions = get_all_maxs(function(deck), lambda a: trial(function,
+    #                                                        deck.execute(a)).score_state())
+    def score(action):
+        new_deck = deck.execute(action)
+        if new_deck.get_actions():
+            result = max([new_deck.score_action(a) for a in function(new_deck)])
+        else:
+            result = -1
+        return result
+    actions = get_all_maxs(function(deck), score)
     return actions
 
 
@@ -91,7 +99,7 @@ def greedy(deck):
     :param type: State
     :return type: action list
     """
-    return get_all_mins(deck.get_actions(), deck.score_action)
+    return get_all_maxs(deck.get_actions(), deck.score_action)
 
 
 def rollout(deck):

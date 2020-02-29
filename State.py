@@ -64,16 +64,19 @@ class State:
         Score the state according to the greedy rule
         :return: unblocked * 5 + remaining * (-1)
         """
-        unblocked = self.stock + self.pyramid.get_all_unblocked()
-        remaining = self.cards
-        return len(unblocked) * 5 + len(remaining) * (-1)
+        actions = self.get_actions()
+        return len(actions)
 
     def score_action(self, action):
         """
         Return the score of each action according to the greedy rule
         :return type: int
         """
-        return self.execute(action).score_state()
+        extra = 0
+        for a in action:
+            if self.hashmap[a][0] == "Stack":
+                extra += 100
+        return extra + self.execute(action).score_state()
 
     def execute(self, action):
         """

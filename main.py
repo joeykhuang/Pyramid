@@ -13,8 +13,8 @@ import strategies
 
 basic = simulation.z_interval(0.95, strategies.simple, 1000)
 print(basic)
-greedy = simulation.z_interval(0.95, strategies.greedy, 100)
+greedy = simulation.z_interval(0.95, strategies.greedy, 50)
 print(greedy)
-one_rollout = simulation.z_interval(0.95, strategies.rollout, 10)
+one_rollout = simulation.z_interval(0.95, strategies.rollout, 50)
 print(one_rollout)
 
